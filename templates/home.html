@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  </head>
-  <body>
+    <title>Home</title>
+</head>
+<body>
 
-    {% for book in books %}
-    <div> <h3>{{ book.title }}</h3>
-    </div>
-    {% endfor %}
+<a href="/?sort_by=title">Sort by title</a> | <a href="/?sort_by=author">sort by author</a>
 
-  </body>
+{% for book in books %}
+<div>
+    <h3>{{ book.title }} von {{ book.author.name }}</h3>
+</div>
+<hr>
+{% endfor %}
+
+</body>
 </html>
