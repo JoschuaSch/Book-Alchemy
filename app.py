@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, get_flashed_messages
 from data_models import db, Author, Book
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite:///C:\Users\schro\Book-Alchemy\data\library.sqlite'
@@ -11,8 +12,10 @@ db.init_app(app)
 def add_author():
     if request.method == 'POST':
         name = request.form.get('name')
-        birth_date = request.form.get('birth_date')
-        date_of_death = request.form.get('date_of_death')
+        birth_date_str = request.form.get('birth_date')
+        birth_date = datetime.strptime(birth_date_str, '%Y-%m-%d').date() if birth_date_str else None
+        date_of_death_str = request.form.get('date_of_death')
+        date_of_death = datetime.strptime(date_of_death_str, '%Y-%m-%d').date() if date_of_death_str else None
         new_author = Author(name=name, birth_date=birth_date, date_of_death=date_of_death)
         db.session.add(new_author)
         db.session.commit()
@@ -27,18 +30,14 @@ def add_book():
         title = request.form.get('title')
         isbn = request.form.get('isbn')
         publication_year = request.form.get('publication_year')
-        author_name = request.form.get('author_name')
-        author = Author.query.filter_by(name=author_name).first()
-        if not author:
-            author = Author(name=author_name)
-            db.session.add(author)
-            db.session.commit()
-        new_book = Book(title=title, isbn=isbn, publication_year=publication_year, author_id=author.id)
+        author_id = request.form.get('author_id')
+        new_book = Book(title=title, isbn=isbn, publication_year=publication_year, author_id=author_id)
         db.session.add(new_book)
         db.session.commit()
         flash('Book added successfully!', 'success')
         return redirect(url_for('add_book'))
-    return render_template('add_book.html')
+    authors = Author.query.all()
+    return render_template('add_book.html', authors=authors)
 
 
 @app.route('/', methods=['GET'])

@@ -13,6 +13,7 @@
 {% for book in books %}
 <div>
     <h3>{{ book.title }} from {{ book.author.name }}</h3>
+    <img src="https://covers.openlibrary.org/b/isbn/{{ book.isbn }}-M.jpg" alt="{{ book.title }} Cover" width="100">
 </div>
 <hr>
 {% endfor %}
