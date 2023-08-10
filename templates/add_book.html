@@ -18,12 +18,8 @@
     <label for="publication_year">Publication Year:</label>
     <input type="number" id="publication_year" name="publication_year" required><br><br>
 
-    <label for="author">Author:</label>
-    <select name="author_id" required>
-        {% for author in authors %}
-            <option value="{{ author.id }}">{{ author.name }}</option>
-        {% endfor %}
-    </select><br><br>
+    <label for="author_name">Autor:</label>
+    <input type="text" id="author_name" name="author_name" required><br><br>
 
     <input type="submit" value="Add Book">
 </form>

@@ -3,6 +3,7 @@ from data_models import db, Author, Book
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite:///C:\Users\schro\Book-Alchemy\data\library.sqlite'
+app.secret_key = 'yes_sir'
 db.init_app(app)
 
 
@@ -26,14 +27,18 @@ def add_book():
         title = request.form.get('title')
         isbn = request.form.get('isbn')
         publication_year = request.form.get('publication_year')
-        author_id = request.form.get('author_id')
-        new_book = Book(title=title, isbn=isbn, publication_year=publication_year, author_id=author_id)
+        author_name = request.form.get('author_name')
+        author = Author.query.filter_by(name=author_name).first()
+        if not author:
+            author = Author(name=author_name)
+            db.session.add(author)
+            db.session.commit()
+        new_book = Book(title=title, isbn=isbn, publication_year=publication_year, author_id=author.id)
         db.session.add(new_book)
         db.session.commit()
         flash('Book added successfully!', 'success')
         return redirect(url_for('add_book'))
-    authors = Author.query.all()
-    return render_template('add_book.html', authors=authors)
+    return render_template('add_book.html')
 
 
 @app.route('/', methods=['GET'])
