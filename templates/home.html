@@ -7,6 +7,7 @@
     <title>Home</title>
 </head>
 <body>
+
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         {% for category, message in messages %}
@@ -16,13 +17,22 @@
         {% endfor %}
     {% endif %}
 {% endwith %}
+
 <form action="/" method="GET">
     <label for="search">Search:</label>
     <input type="text" name="search" id="search">
     <input type="submit" value="Search">
 </form>
 
-<a href="/?sort_by=title">Sort by title</a> | <a href="/?sort_by=author">Sort by author</a>
+<a href="/?sort_by=title">Sort by title</a>
+<a href="/?sort_by=author">Sort by author</a>
+
+<form action="/add_book" method="GET" style="display: inline;">
+    <input type="submit" value="Add Book">
+</form>
+<form action="/add_author" method="GET" style="display: inline;">
+    <input type="submit" value="Add Author">
+</form>
 
 {% for book in books %}
 <div>
@@ -30,6 +40,9 @@
     <img src="https://covers.openlibrary.org/b/isbn/{{ book.isbn }}-M.jpg" alt="{{ book.title }} Cover" width="100">
     <form action="/book/{{ book.id }}/confirm_delete" method="GET" style="display: inline;">
         <input type="submit" value="Delete Book">
+    </form>
+    <form action="/author/{{ book.author.id }}/confirm_delete" method="GET" style="display: inline;">
+        <input type="submit" value="Delete Author">
     </form>
 </div>
 <hr>

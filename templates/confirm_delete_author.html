@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm Delete</title>
+</head>
+<body>
+    <h2>Are you sure you want to delete the author "{{ author.name }}" and all their books?</h2>
+    <form action="{{ url_for('confirm_delete_author', author_id=author.id) }}" method="POST">
+        <input type="submit" value="Yes, Delete">
+    </form>
+    <a href="{{ url_for('home') }}">Cancel</a>
+</body>
+</html>
