@@ -43,11 +43,39 @@ def add_book():
 @app.route('/', methods=['GET'])
 def home():
     sort_by = request.args.get('sort_by', 'title')
-    if sort_by == "author":
+    search_term = request.args.get('search_term', None)
+    if search_term:
+        books = Book.query.filter(Book.title.like(f"%{search_term}%")).all()
+        if not books:
+            flash('No books match the search criteria.', 'info')
+    elif sort_by == "author":
         books = Book.query.join(Author).order_by(Author.name).all()
     else:
         books = Book.query.order_by(Book.title).all()
     return render_template('home.html', books=books)
+
+
+@app.route('/book/<int:book_id>/delete', methods=['POST'])
+def delete_book(book_id):
+    book = Book.query.get_or_404(book_id)
+    if not book:
+        flash('Book not found!', 'error')
+        return redirect(url_for('home'))
+    db.session.delete(book)
+    db.session.commit()
+    flash('Book deleted successfully!', 'success')
+    return redirect(url_for('home'))
+
+
+@app.route('/book/<int:book_id>/confirm_delete', methods=['GET', 'POST'])
+def confirm_delete(book_id):
+    book = Book.query.get_or_404(book_id)
+    if request.method == 'POST':
+        db.session.delete(book)
+        db.session.commit()
+        flash('Book deleted successfully!', 'success')
+        return redirect(url_for('home'))
+    return render_template('confirm_delete.html', book=book)
 
 
 if __name__ == '__main__':
